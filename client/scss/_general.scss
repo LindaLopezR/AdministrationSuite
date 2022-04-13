@@ -1,0 +1,104 @@
+@import './variables';
+
+body {
+  height: 100vh;
+  background-color: #efefef;
+}
+
+* {
+  font-family: fontGeneral;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: fontTitles;
+}
+
+p, label,
+input, select {
+  font-size: 0.8rem!important;
+}
+
+#react-target {
+  background-color: #efefef;
+  height: 100vh;
+}
+
+.main-layout {
+  > .navbar,
+  nav {
+    background-color: #002841!important;
+    color: white!important;
+  }
+}
+
+.navbar {
+  left: 64px!important;
+  height: 50px;
+  a, button,
+  .navbar-toggler-icon {
+    color: white!important;
+  }
+  .dropdown-menu a{
+    color: black!important;
+  }
+}
+
+.container-general {
+  padding-top: 60px;
+  padding-left: 64px!important;
+  height: 100%;
+  section {
+    height: 93%;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
+
+// COLORS
+.icon-lightColor {
+  color: $light-color;
+}
+
+.title-light-color {
+  color: $light-color;
+}
+
+// BADGE
+.badge-label {
+  text-align: center;
+  font-size: 9px;
+  padding: 1px 5px;
+}
+.badge-label-success {
+  background-color: $success-color;
+}
+.badge-label-warning {
+  background-color: $warning-color;
+}
+.badge-label-danger {
+  background-color: $danger-color;
+}
+.badge-label-none {
+  background-color: #c9c9c9;
+}
+
+// CARDS
+.card-body {
+  padding: 0.5rem 1rem;
+}
+
+// BUTTONS
+.btn-teal {
+  color: white!important;
+  background-color: $teal-color!important;
+  border-color: $teal-color!important;
+  &:hover {
+    background-color: $teal-color-dark!important;
+    border-color: $teal-color-dark!important;
+  }
+}

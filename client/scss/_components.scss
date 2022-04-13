@@ -1,0 +1,88 @@
+@import './variables';
+
+// Loading
+.loading-view {
+  height: 100%;
+  flex-direction: column;
+  z-index: 2;
+  @include items_center();
+
+  #loader {
+    display: block;
+    left: 50%;
+    top: 50%;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: $light-color;
+    @include animation(spin 2s linear infinite);
+
+    &::before, &::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid transparent;
+    }
+
+    &::before {
+      @include circle(5px);
+      border-top-color: $teal-color-dark;
+      @include animation(spin 3s linear infinite);
+    }
+    
+    &::after {
+      @include circle(12px);
+      border-top-color: $teal-color;
+      @include animation(spin 1.5s linear infinite);
+    }
+  }
+}
+
+.indicators-row {
+  display: flex;
+  flex-direction: row;
+  h4 small {
+    font-size: 0.5rem;
+    margin-right: 0.6rem;
+    span {
+      margin-right: 0.2rem;
+    }
+  }
+}
+
+// Cards
+.card-char-dashboard {
+  text-decoration: none;
+  color: black;
+ .card {
+  margin-bottom: 0.5rem;
+  .card-body {
+    padding: 3px;
+    text-align: center;
+  }
+ }
+}
+
+// Modals
+.modal-dialog {
+  z-index: 3;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    @include transform(rotate(0deg));
+  }
+  100% {
+    @include transform(rotate(360deg));
+  }
+}
+
+@keyframes spin {
+  0% {
+    @include transform(rotate(0deg));
+  }
+  100% {
+    @include transform(rotate(360deg));
+  }
+}

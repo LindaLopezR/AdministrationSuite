@@ -1,0 +1,62 @@
+{
+  "public": {
+    "dashboard": true,
+    "companies": [
+      {
+        "company": "Tijuana",
+        "url": "https://swf.goandsee.co",
+        "country": "mexico"
+      },
+      {
+        "company": "Reynosa 1",
+        "url": "https://swf-ry.goandsee.co",
+        "country": "mexico"
+      },
+      {
+        "company": "Reynosa 2",
+        "url": "https://swf-ry2.goandsee.co",
+        "country": "mexico"
+      },
+      {
+        "company": "Victoria",
+        "url": "https://swf-victoria.goandsee.co",
+        "country": "mexico"
+      },
+      {
+        "company": "Grayling",
+        "url": "https://swf-grayling.goandsee.co",
+        "country": "usa"
+      },
+      {
+        "company": "Edison",
+        "url": "https://swfedison.goandsee.co",
+        "country": "usa"
+      },
+      {
+        "company": "Horizons",
+        "url": "https://swfhorizons.goandsee.co",
+        "country": "usa"
+      },
+      {
+        "company": "Middleton",
+        "url": "https://swfmiddleton.goandsee.co",
+        "country": "usa"
+      },
+      {
+        "company": "Cesta",
+        "url": "https://swfcesta.goandsee.co",
+        "country": "usa"
+      }
+    ],
+    "countries": [
+      {
+        "name": "USA",
+        "key": "usa"  
+      },
+      {
+        "name": "México",
+        "key": "mexico"
+      }
+    ]
+  }
+}

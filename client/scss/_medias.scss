@@ -1,0 +1,22 @@
+@media (max-width: 767px) {
+  .navbar {
+    left: 0px!important;
+  }
+
+  .container-general {
+    section {
+      height: auto;
+    }
+  }
+}
+
+@media (max-width: 991px) {
+  .navbar-nav {
+    background: #002841;
+    color: white;
+    padding: 1rem;
+    a.nav-link {
+      padding: .375rem .75rem!important;
+    }
+  }
+}
