@@ -42,11 +42,20 @@
 .indicators-row {
   display: flex;
   flex-direction: row;
-  h4 small {
-    font-size: 0.5rem;
-    margin-right: 0.6rem;
-    span {
-      margin-right: 0.2rem;
+  align-items: baseline;
+  h6 {
+    font-size: 0.65rem;
+    margin-bottom: 0;
+    margin-right: 0.4rem;
+  }
+  p {
+    margin-bottom: 0;
+    small {
+      font-size: 0.55rem;
+      margin-right: 0.6rem;  
+      span {
+        margin-right: 0.2rem;
+      }
     }
   }
 }
@@ -62,11 +71,41 @@
     text-align: center;
   }
  }
+  &:hover {
+    .card.bkg-danger {
+      background-color: #ad1f25!important;
+    }
+    .card.bkg-success {
+      background-color: #4e8f5c!important;
+    }
+    .card.bkg-no-data {
+      background-color: #b3afaf!important;
+      color: black;
+    }
+    .card.bkg-warning {
+      background-color: #D9D793!important;
+      color: black;
+    }
+  }
 }
 
 // Modals
 .modal-dialog {
   z-index: 3;
+}
+
+// Table
+.react-bootstrap-table table {
+  thead {
+    font-size: 0.7rem;
+  }
+  tbody {
+    font-size: 0.7rem;
+  }
+}
+.table-responsive {
+  width: 100%;
+  overflow-x: hidden!important;
 }
 
 @-webkit-keyframes spin {

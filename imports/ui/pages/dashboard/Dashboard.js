@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, Col, Form, Row } from 'react-bootstrap';
-import { DDP } from 'meteor/ddp-client';
-import DatePicker from 'react-datepicker';
-
-import { 
-  renderCountries, renderMonths, renderOptions, renderWeeks 
-} from '/imports/ui/components/form/formUtils';
+import { Card, Col, Row } from 'react-bootstrap';
 
 import { ParticipationsCollection } from '/imports/api/participations';
 
+import { getObjectFromPeriod, INIT_VALUE } from '../utilities/utilities';
+import { Filters } from '/imports/ui/components/form/Filters';
+import { checkForAllConnections, generateAllConnections } from '../utilities/ddp';
+
 import DashboardChart from '/imports/ui/components/charts/DashboardChart';
 import LoadingView from '/imports/ui/components/loading/LoadingView';
-import { getObjectFromPeriod } from '../utilities/utilities';
+import TitleSection from '/imports/ui/components/pages/TitleSection';
 
 const DEFAULT_FILTERS = {
   country: 'all',
@@ -23,8 +21,6 @@ const DEFAULT_FILTERS = {
   customMonth: '',
 };
 
-const allCompanies = Meteor.settings.public.companies || [];
-
 function getDataToParticipation(participation) {
   if (!participation) return 0;
   return participation.buData.reduce((prev, current) => {
@@ -34,18 +30,18 @@ function getDataToParticipation(participation) {
 
 export default Dashboard = () => {
 
-  const [ loading, setLoading ] = useState(false);
+  const [ loading, setLoading ] = useState(true);
   const [ filters, setFilters ] = useState(DEFAULT_FILTERS);
 
   const [ auditCompliance, setAuditCompliance ] = useState([]);
   const [ auditOnTime, setAuditOnTime ] = useState([]);
   const [ auditScore, setAuditScore ] = useState([]);
   const [ participation, setParticipation ] = useState([]);
-  const [ connectionDdp, setDdpConnection ] = useState(null);
+  const [ connectionDdp, setDdpConnection ] = useState([]);
+  const [ init, setInit ] = useState(INIT_VALUE);
 
   const updateDashboard = () => {
     setLoading(true);
-
     const { 
       country, company, period, startDate, finishDate, customWeek, customMonth
     } = filters;
@@ -80,7 +76,7 @@ export default Dashboard = () => {
         if (error) {
           return console.log('Error ', error);
         } else if (result) {
-          let auditData = auditCompliance;
+          let auditData = init.auditCompliance;
           const data = {
             result: isNaN(result.average)? '---': result.average,
             company: ddpConnection.company,
@@ -88,7 +84,9 @@ export default Dashboard = () => {
             id: ddpConnection.company,
           };
           auditData.push(data);
-          setAuditCompliance(auditData);
+          const newData = Object.assign({}, init);
+          newData.auditCompliance = auditData;
+          setInit(newData);
         }
       });
 
@@ -97,8 +95,7 @@ export default Dashboard = () => {
         if (error) {
           return console.log('Error ', error);
         } else if (result) {
-          let auditsOnTimeComplition = auditOnTime;
-  
+          let auditsOnTimeComplition = init.auditOnTime;
           const data = {
             result: isNaN(result.average)? '---': result.average,
             company: ddpConnection.company,
@@ -106,7 +103,9 @@ export default Dashboard = () => {
             id: ddpConnection.company,
           };
           auditsOnTimeComplition.push(data);
-          setAuditOnTime(auditsOnTimeComplition);
+          const newData = Object.assign({}, init);
+          newData.auditOnTime = auditsOnTimeComplition;
+          setInit(newData);
         }
       });
 
@@ -115,8 +114,7 @@ export default Dashboard = () => {
         if (error) {
           return console.log('Error ', error, ddpConnection.company);
         } else if (result) {
-          let auditsScoreAverage = auditScore
-
+          let auditsScoreAverage = init.auditScore;
           const data = {
             result: isNaN(result.average)? '---': result.average,
             company: ddpConnection.company,
@@ -125,7 +123,9 @@ export default Dashboard = () => {
             link: `/companyDetail/score/${ddpConnection.company}`
           };
           auditsScoreAverage.push(data);
-          setAuditScore(auditsScoreAverage);
+          const newData = Object.assign({}, init);
+          newData.auditScore = auditsScoreAverage;
+          setInit(newData);
         }
       });
 
@@ -138,7 +138,7 @@ export default Dashboard = () => {
           return console.log('Error ', error, ddpConnection.company);
         } else  {
           // Participation
-          let participationAverage = participation;
+          let participationAverage = init.participation;
           const resultNumber = totalPArticipationByCompany == 0? 0: result;
           const data = {
             result: Math.round(resultNumber),
@@ -151,68 +151,52 @@ export default Dashboard = () => {
           };
 
           participationAverage.push(data);
-          setParticipation(participationAverage);
+          const newData = Object.assign({}, init);
+          newData.participation = participationAverage;
+          setInit(newData);
         }
       });
     });
-
-    setLoading(false);
-
-    return;
-  }
-
-  const generateConnections = function() {
-    const allowedClients = allCompanies.filter(client => client);
-    const ddpConnections = allowedClients.map(client => {
-      const connection = DDP.connect(client.url)
-      return {
-        connection,
-        company: client.company,
-        country: client.country,
-      };
-    });
-
-    setDdpConnection(ddpConnections);
-  }
-  
-  const checkForAllConnections = function() {
-    const ddpConnections = connectionDdp;
-    const allStatus = ddpConnections.map(ddpConnection => {
-      return ddpConnection.connection.status().status;
-    });
-
-    const noConnected = allStatus.filter(status => status != 'connected');
-    if (noConnected.length > 0) {
-      setTimeout(() => {
-        checkForAllConnections();
-      }, 500);
-    } else {
-      // Ya se conecto
-      console.log('Ya se conecto a todas');
-      updateDashboard(true);
-    }
   }
 
   useEffect(() => {
-    generateConnections();
-    updateDashboard(true);
+    const dataCheck = generateAllConnections();
+    setDdpConnection(dataCheck);
   }, []);
 
   useEffect(() => {
-    if (connectionDdp) {
-      checkForAllConnections();
+    if (Object.values(connectionDdp).length) {
+      checkForAllConnections(connectionDdp, updateDashboard());
     }
   }, [ connectionDdp ]);
 
   useEffect(() => {
-    console.log('// ', auditCompliance);
-  }, [ auditCompliance, auditOnTime ]);
+    if (
+      init.auditCompliance.length == Object.values(connectionDdp).length &&
+      init.auditOnTime.length == Object.values(connectionDdp).length &&
+      init.auditScore.length == Object.values(connectionDdp).length &&
+      init.participation.length == Object.values(connectionDdp).length
+    ) {
+      setAuditCompliance(init.auditCompliance);
+      setAuditOnTime(init.auditOnTime);
+      setAuditScore(init.auditScore);
+      setParticipation(init.participation);
 
-  const onChange = (key, newValue) => {
-    const newData = Object.assign({}, filters);
-    newData[key] = newValue;
-    setFilters(newData);
-  }
+      const old = {
+        auditCompliance: [],
+        auditOnTime: [],
+        auditScore: [],
+        participation: [],
+      }
+
+      setInit(old);
+      setLoading(false);
+    }
+  }, [ init ]);
+
+  useEffect(() => {
+    updateDashboard();
+  }, [ filters ]);
 
   const getData = (data, link) => {
     let chartData = data;
@@ -239,128 +223,19 @@ export default Dashboard = () => {
 
   return (
     <>
-      <Row>
-        <Col md={12}>
-          <h4>Dashboard</h4> 
-        </Col>
-      </Row>
+      <TitleSection title="Dashboard" />
       <section>
         <Row>
-          <Col md={12}>
-            <Card className="mb-3">
-              <Card.Body>
-                <Form>
-                  <Row>
-                    <Form.Group as={Col} className="mb-3" controlId="country">
-                      <Form.Label>País</Form.Label>
-                      <Form.Select
-                        size="sm"
-                        aria-label="País"
-                        value={filters.country}
-                        onChange={e => onChange('country', e.target.value)}
-                      >
-                        <option value="all">Todos</option>
-                        {renderCountries()}
-                      </Form.Select>
-                    </Form.Group>
-                    <Form.Group as={Col} className="mb-3" controlId="company">
-                      <Form.Label>Compañía</Form.Label>
-                      <Form.Select
-                        size="sm"
-                        aria-label="Compañía"
-                        value={filters.company}
-                        onChange={e => onChange('company', e.target.value)}
-                      >
-                        <option value="all">Todos</option>
-                        {renderOptions([])}
-                      </Form.Select>
-                    </Form.Group>
-                    <Form.Group as={Col} className="mb-3" controlId="period">
-                      <Form.Label>Periodo de tiempo</Form.Label>
-                      <Form.Select
-                        size="sm"
-                        aria-label="time"
-                        value={filters.period}
-                        onChange={e => onChange('period', e.target.value)}
-                      >
-                        <option value="day">Hoy</option>
-                        <option value="week">Esta semana</option>
-                        <option value="month">Este mes</option>
-                        <option value="customWeek">Semana del año</option>
-                        <option value="customMonth">Mes del año</option>
-                        <option value="custom">Fecha personalizada</option>
-                      </Form.Select>
-                    </Form.Group>
-                    {filters.period == 'customWeek' && (
-                      <Form.Group as={Col} controlId="customWeek">
-                        <Form.Label>Semana</Form.Label>
-                        <Form.Select
-                          size="sm"
-                          aria-label="Semana"
-                          value={filters.customWeek}
-                          onChange={e => onChange('customWeek', e.target.value)}
-                        >
-                          {renderWeeks()}
-                        </Form.Select>
-                      </Form.Group>
-                    )}
-                    {filters.period == 'customMonth' && (
-                      <Form.Group as={Col} controlId="customMonth">
-                        <Form.Label>Mes</Form.Label>
-                        <Form.Select
-                          size="sm"
-                          aria-label="Semana"
-                          value={filters.customMonth}
-                          onChange={e => onChange('customMonth', e.target.value)}
-                        >
-                          {renderMonths()}
-                        </Form.Select>
-                      </Form.Group>
-                    )}
-                    {filters.period == 'custom' && (
-                      <>
-                        <Form.Group as={Col} controlId="startDate">
-                          <Form.Label>Empieza</Form.Label>
-                          <DatePicker
-                            size="sm"
-                            dateFormat="dd/MM/yyyy"
-                            className="form-select input-calendar"
-                            onChange={date => onChange(date)}
-                            selected={filters.startDate}
-                          />
-                        </Form.Group>
-                        <Form.Group as={Col} controlId="endDate">
-                          <Form.Label>Termina</Form.Label>
-                          <DatePicker
-                            size="sm"
-                            dateFormat="dd/MM/yyyy"
-                            className="form-select input-calendar"
-                            onChange={date => onChange(date)}
-                            selected={filters.finishDate}
-                          />
-                        </Form.Group>
-                      </>
-                    )}
-                    <Col md={2}>
-                      <Button
-                        size="sm"
-                        variant="primary"
-                        className="btn-100 mt-0 mt-md-4"
-                        onClick={updateDashboard}
-                      >
-                        Actualizar
-                      </Button>
-                    </Col>
-                  </Row>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
+          <Filters
+            filters={filters}
+            handleFilter={(filters) => setFilters(filters)}
+          />
           <Col md={6}>
             <Card className="mb-3">
               <Card.Body>
                 <DashboardChart
                   title="Auditorias Completadas"
+                  labelInfo="General"
                   showChart={auditCompliance.length}
                   companyData={getData(auditCompliance, '/companyDetail/auditCompliance/')}
                 />
@@ -372,6 +247,7 @@ export default Dashboard = () => {
               <Card.Body>
                 <DashboardChart
                   title="Auditorias a tiempo"
+                  labelInfo="General"
                   showChart={auditOnTime.length}
                   companyData={getData(auditOnTime, '/companyDetail/onTime/')}
                 />
@@ -383,6 +259,7 @@ export default Dashboard = () => {
               <Card.Body>
                 <DashboardChart
                   title="Promedio de Hallazgos"
+                  labelInfo="General"
                   showChart={auditScore.length}
                   companyData={getData(auditScore, '/companyDetail/score/')}
                 />
@@ -394,6 +271,7 @@ export default Dashboard = () => {
               <Card.Body>
                 <DashboardChart
                   title="Participación"
+                  labelInfo="Participation"
                   showChart={participation.length}
                   companyData={getData(participation, '/companyDetail/')}
                 />

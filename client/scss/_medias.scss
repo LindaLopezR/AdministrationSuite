@@ -1,4 +1,8 @@
 @media (max-width: 767px) {
+  body {
+    height: auto;
+  }
+
   .navbar {
     left: 0px!important;
   }
@@ -6,6 +10,22 @@
   .container-general {
     section {
       height: auto;
+      padding: initial;
+      padding-bottom: 1rem;
+    }
+  }
+
+  .table-responsive {
+    overflow-x: auto!important;
+  }
+
+  .container-general {
+    padding-left: var(--bs-gutter-x,.75rem)!important;
+  }
+
+  .general-layout {
+    .card {
+      width: 60%;
     }
   }
 }
@@ -17,6 +37,14 @@
     padding: 1rem;
     a.nav-link {
       padding: .375rem .75rem!important;
+    }
+  }
+}
+
+@media (max-width: 991px) and (min-width: 768px) {
+  .general-layout {
+    .card {
+      width: 50%;
     }
   }
 }

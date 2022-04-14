@@ -1,5 +1,14 @@
 import moment from 'moment';
 
+import { LevelsCollection } from '../../../api/levelsUnits';
+
+export const INIT_VALUE = {
+  auditCompliance: [],
+  auditOnTime: [],
+  auditScore: [],
+  participation: [],
+};
+
 export const getObjectFromPeriod = (period, selectedWeek, selectedMonth, dateStart, dateEnd) => {
   if (period == 'month') {
     return {
@@ -45,4 +54,17 @@ export const getObjectFromPeriod = (period, selectedWeek, selectedMonth, dateSta
     startDate: moment().startOf('day').toDate(),
     finishDate: moment().endOf('day').toDate(),
   };
+};
+
+export const callbackError = (error) => {
+  return alert(`Error, ${error.reason}`);
+};
+
+export const getPositionsByLevel = (level) => {
+  let positions = [];
+  if (level !== 'all') {
+    const data = LevelsCollection.findOne({ _id: level });
+    positions = data.positions;
+  }
+  return positions;
 };
