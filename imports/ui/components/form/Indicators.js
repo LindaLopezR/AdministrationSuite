@@ -75,3 +75,26 @@ export const indicatorsScore = () => (
     </p>
   </div>
 );
+
+export const indicatorsParticipations = (top, bottom) => (
+  <div className="indicators-row">
+    <p>
+      <small>
+        <span className="badge-label badge-label-success">&nbsp;</span>
+        Igual o mayor que {top}%
+      </small>
+    </p>
+    <p>
+      <small>
+        <span className="badge-label badge-label-warning">&nbsp;</span>
+        Entre {bottom}% - {top}%
+      </small>
+    </p>
+    <p>
+      <small>
+        <span className="badge-label badge-label-danger">&nbsp;</span>
+        Menos que {bottom}%
+      </small>
+    </p>
+  </div>
+);
