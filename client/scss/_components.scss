@@ -89,6 +89,69 @@
   }
 }
 
+.section-scroll {
+  .page-wrap {
+    display: -webkit-box;
+    flex-direction: row;
+    width: 100%;
+    overflow-x: auto;
+    height: 97%;
+    padding-bottom: 0.5rem;
+    .card {
+      width: 250px;
+      margin-left: 0.5rem;
+      max-height: 100%;
+      overflow-y: auto;
+      .accordion-item {
+        border: 0;
+        .accordion-header {
+          button {
+            padding: 0;
+            border-color: transparent;
+            font-size: 0.8rem;
+            color: #878787;
+          }
+        }
+        .accordion-body {
+          padding: 0;
+          font-size: 0.7rem;
+          padding-top: 0.3rem;
+        }
+      }
+      &::-webkit-scrollbar {
+        width: 8px;
+      }
+      &::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        margin-left: 10px; 
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #c4c3c3;
+        border-radius: 5px; 
+      }
+      &::-webkit-scrollbar-thumb:hover {
+        background: #d3d3d3; 
+      }
+    }
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 10px;
+      margin-top: 0.5rem;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      margin-left: 10px; 
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #c4c3c3;
+      border-radius: 5px; 
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: #d3d3d3; 
+    }
+  }
+}
+
 // Modals
 .modal-dialog {
   z-index: 3;

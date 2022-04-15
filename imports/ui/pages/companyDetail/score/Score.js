@@ -147,6 +147,7 @@ export default Score = () => {
                   company={id}
                   data={tableByAudits}
                   headers={headerAudits}
+                  filters={filters}
                 />
               </Card.Body>
             </Card>

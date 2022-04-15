@@ -30,20 +30,16 @@ export default TableDetail = () => {
 
   const updateData = () => {
     setLoading(true);
-  
-    const periodFilter = getObjectFromPeriod();
-    let filtersData = filters;
-    if (!filtersData) {
-      filtersData = periodFilter;
-    }
 
+    const { period, startDate, finishDate, customMonth, customWeek } = filters;
+    const filtersData = getObjectFromPeriod(period, customWeek, customMonth, startDate, finishDate);
     const methodName = getMethodNameByTableName(type);
     const propName = getPropNameByTableName(type);
     const propValue = prop[propName];
     const paramName = getParamNameByTableName(type);
     const proccessor = getProcessorByTableName(type);
     const ddpConnection = conection;
-  
+
     ddpConnection.connection.call(methodName, filtersData, paramName, propValue, function(error, result) {
       if (error) callbackError(error);
       if (result) {
@@ -64,12 +60,12 @@ export default TableDetail = () => {
 
   useEffect(() => {
     if (Object.values(conection).length) {
-      checkForConnection(conection, updateData(filters))
+      checkForConnection(conection, updateData(filters));
     }
   }, [ conection ]);
 
   useEffect(() => {
-    if (Object.values(data).length) {
+    if (data) {
       setTableData(data);
       setLoading(false);
     }

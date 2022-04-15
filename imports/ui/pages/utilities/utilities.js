@@ -1,3 +1,4 @@
+import { faClock, faFile, faImage, faMapPin, faNoteSticky, faVideo, faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 
 import { LevelsCollection } from '../../../api/levelsUnits';
@@ -57,6 +58,7 @@ export const getObjectFromPeriod = (period, selectedWeek, selectedMonth, dateSta
 };
 
 export const callbackError = (error) => {
+  console.log('ERROR ', error)
   return alert(`Error, ${error.reason}`);
 };
 
@@ -68,3 +70,81 @@ export const getPositionsByLevel = (level) => {
   }
   return positions;
 };
+
+export const getIconDoc = (data) => {
+  let type = getTypeFromUrl(data);
+  switch(type){
+    case 0 :
+      return faImage;
+    case 1 :
+      return faVolumeHigh;
+    case 5 :
+      return faClock;
+    case 6 :
+      return faNoteSticky;
+    case 7 :
+      return faVideo;
+    case 8 :
+      return faMapPin;
+    default :
+      return faFile;
+  }
+};
+
+export const getTypeDoc = (data) => {
+  let type = getTypeFromUrl(data);
+  switch(type){
+    case 0 :
+      return 'Foto';
+    case 1 :
+      return 'Audio';
+    case 5 :
+      return 'Tiempo';
+    case 6 :
+      return 'Nota';
+    case 7 :
+      return 'Video';
+    case 8 :
+      return 'GPS';
+    default :
+      return `N/A ${type}`;
+  }
+};
+
+export const getDataDoc = (data) => {
+  let type = getTypeFromUrl(data);
+  switch(type){
+    case 0 :
+      return `<a href="${data}" target="_blank"><img class="img-detail" src="${data}"></a>`;
+    case 1 :
+      return `<a href="${data}">${data}</a>`;
+    case 5 :
+      return `${data} TAPi18n.__('seconds')`;
+    case 6 :
+      return data;
+    case 7 :
+      return `<video class="rounded image" width="170px" height="120px" controls><source src="${data}"></video>`;
+    case 8 :
+      return `<a href="${data}" target="_blank"><img class="ui small image" src="${data}/assets/img/mapa-09.png"></a>`;
+    default :
+      return 'N/A';
+  }
+};
+
+function getTypeFromUrl(data) {
+	if (data.startsWith('{') && data.endsWith('}')) {
+		return 8;
+	}
+	if (data.endsWith('jpg') || data.endsWith('png')) {
+		return 0;
+	}
+	if (data.endsWith('mp4') || data.endsWith('webm')) {
+		return 7;
+	}
+	if (data.indexOf(':') > -1) {
+		return 5;
+	}
+	else {
+		return 6;
+	}
+}

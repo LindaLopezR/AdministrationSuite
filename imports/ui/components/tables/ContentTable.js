@@ -10,7 +10,7 @@ import NoData from '/imports/ui/components/noData/NoData';
 
 export default ContentTable = props => {
 
-  const { id, company, data, headers } = props;
+  const { id, company, data, filters, headers } = props;
   const navigate = useNavigate();
 
   const clickBtnView = (data) => {
@@ -18,6 +18,7 @@ export default ContentTable = props => {
       type: id,
       prop: data,
       company,
+      filters
     };
 
     navigate(`/tableDetail/${company}`, {

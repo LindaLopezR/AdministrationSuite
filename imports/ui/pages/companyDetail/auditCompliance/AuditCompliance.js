@@ -150,6 +150,7 @@ export default AuditCompliance = () => {
                   company={id}
                   data={tableByAudits}
                   headers={headerAudits}
+                  filters={filters}
                 />
               </Card.Body>
             </Card>
@@ -168,6 +169,7 @@ export default AuditCompliance = () => {
                   company={id}
                   data={tableByUsers}
                   headers={headerUsers}
+                  filters={filters}
                 />
               </Card.Body>
             </Card>
