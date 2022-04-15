@@ -39,6 +39,7 @@ export default Dashboard = () => {
   const [ participation, setParticipation ] = useState([]);
   const [ connectionDdp, setDdpConnection ] = useState([]);
   const [ init, setInit ] = useState(INIT_VALUE);
+  const [ totalConnections, setTotalConnections ] = useState(false);
 
   const updateDashboard = () => {
     setLoading(true);
@@ -69,6 +70,8 @@ export default Dashboard = () => {
         return ddpConnection.country == country;
       });
     }
+
+    setTotalConnections(Object.values(filteredDdpConnections).length);
 
     filteredDdpConnections.forEach(ddpConnection => {
       // Audit compliance
@@ -167,15 +170,16 @@ export default Dashboard = () => {
   useEffect(() => {
     if (Object.values(connectionDdp).length) {
       checkForAllConnections(connectionDdp, updateDashboard());
+      setTotalConnections(Object.values(connectionDdp).length);
     }
   }, [ connectionDdp ]);
 
   useEffect(() => {
     if (
-      init.auditCompliance.length == Object.values(connectionDdp).length &&
-      init.auditOnTime.length == Object.values(connectionDdp).length &&
-      init.auditScore.length == Object.values(connectionDdp).length &&
-      init.participation.length == Object.values(connectionDdp).length
+      init.auditCompliance.length == totalConnections &&
+      init.auditOnTime.length == totalConnections &&
+      init.auditScore.length == totalConnections &&
+      init.participation.length == totalConnections
     ) {
       setAuditCompliance(init.auditCompliance);
       setAuditOnTime(init.auditOnTime);
@@ -192,7 +196,7 @@ export default Dashboard = () => {
       setInit(old);
       setLoading(false);
     }
-  }, [ init ]);
+  }, [ init, totalConnections ]);
 
   useEffect(() => {
     updateDashboard();

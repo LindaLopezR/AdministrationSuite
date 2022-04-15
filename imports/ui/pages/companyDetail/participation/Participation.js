@@ -34,10 +34,10 @@ export default Participation = () => {
   const { loading: loading1, allLevels } = allLevelsByCompany(id);
   const { loading: loading2, allBusiness } = businessUnitsByCompany(id);
 
-  const updateDashboard = () => {
+  const updateParticipations = (filtersData) => {
     setLoading(true);
   
-    const { period, startDate, finishDate, customMonth, customWeek } = filters;
+    const { period, startDate, finishDate, customMonth, customWeek } = filtersData;
     const periodFilter = getObjectFromPeriod(period, customWeek, customMonth, startDate, finishDate);
     const levelFilter = getPositionsByLevel(filters.level);
 
@@ -70,7 +70,7 @@ export default Participation = () => {
 
   useEffect(() => {
     if (Object.values(conection).length) {
-      checkForConnection(conection, updateDashboard())
+      checkForConnection(conection, updateParticipations(filters))
     }
   }, [ conection ]);
 
@@ -85,7 +85,7 @@ export default Participation = () => {
   const updateFilters = (data) => {
     setFilters(data);
     setLoading(true);
-    updateDashboard();
+    updateParticipations(data);
   }
 
   if (loading || loading1 || loading2) {
@@ -104,6 +104,7 @@ export default Participation = () => {
           <Filters
             filters={filters}
             handleFilter={(filters) => updateFilters(filters)}
+            levels={allLevels}
           />
 
           <Col md={12}>

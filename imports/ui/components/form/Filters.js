@@ -6,9 +6,11 @@ import {
   renderCountries, renderMonths, renderOptions, renderWeeks 
 } from '/imports/ui/components/form/formUtils';
 
+const clients = Meteor.settings.public.companies || [];
+
 export const Filters = (props) => {
 
-  const { filters, handleFilter = () => {}, } = props;
+  const { filters, handleFilter = () => {}, levels } = props;
   const [ country, setCountry ] = useState('all');
   const [ company, setCompany ] = useState('all');
   const [ period, setPeriod ] = useState('day');
@@ -16,6 +18,8 @@ export const Filters = (props) => {
   const [ customMonth, setCustomMonth ] = useState('');
   const [ startDate, setStartDate ] = useState(null);
   const [ finishDate, setFinishDate ] = useState(null);
+  const [ levelSelect, setLevelSelect ] = useState('');
+  const [ allCompanies, setAllCompanies ] = useState(clients);
 
   useEffect(() => {
     if (filters) {
@@ -26,8 +30,18 @@ export const Filters = (props) => {
       setCustomMonth(filters.customMonth);
       setStartDate(filters.startDate);
       setFinishDate(filters.finishDate);
+      setLevelSelect(filters.level)
     }
   }, []);
+
+  useEffect(() => {
+    let allSelected = Meteor.settings.public.companies || [];
+    let filteredCompanies = allSelected;
+    if (country !== 'all') {
+      filteredCompanies = allSelected.filter(company => company.country == country);
+    }
+    setAllCompanies(filteredCompanies);
+  }, [ country ]);
 
   const onSubmit = () => {
     const filtersSubmit = {
@@ -73,7 +87,9 @@ export const Filters = (props) => {
                     onChange={e => setCompany(e.target.value)}
                   >
                     <option value="all">Todos</option>
-                    {renderOptions([])}
+                    {Object.values(allCompanies).map((value, i) => (
+                      <option key={`company-${i}`} value={value.company}>{value.company}</option>
+                    ))}
                   </Form.Select>
                 </Form.Group>
               }
@@ -142,6 +158,20 @@ export const Filters = (props) => {
                     />
                   </Form.Group>
                 </>
+              )}
+              {filters.level && (
+                <Form.Group as={Col} controlId="customMonth">
+                  <Form.Label>Nivel</Form.Label>
+                  <Form.Select
+                    size="sm"
+                    aria-label="Level"
+                    value={levelSelect}
+                    onChange={e => setLevelSelect(e.target.value)}
+                  >
+                    <option value="all">Todos</option>
+                    {renderOptions(levels)}
+                  </Form.Select>
+                </Form.Group>
               )}
               <Col md={2}>
                 <Button

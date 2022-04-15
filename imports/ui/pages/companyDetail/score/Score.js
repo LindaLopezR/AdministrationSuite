@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Col, Row } from 'react-bootstrap';
 import { Filters } from '/imports/ui/components/form/Filters';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { callbackError, getObjectFromPeriod } from '/imports/ui/pages/utilities/utilities';
 import { checkForConnection, generateConnection } from '/imports/ui/pages/utilities/ddp';
@@ -24,6 +24,7 @@ const headerAudits = ['Audit', 'User assigned', 'Audits', 'Average', 'Detail'];
 export default Score = () => {
 
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [ filters, setFilters ] = useState(DEFAULT_FILTERS);
   const [ conection, setConection ] = useState([]);
@@ -32,10 +33,10 @@ export default Score = () => {
   const [ selectedAreas, setSelectedAreas ] = useState([]);
   const [ tableByAudits, setTableByAudits] = useState([]);
 
-  const updateDashboard = () => {
+  const updateDataScore = (filtersData) => {
     setLoading(true);
   
-    const { period, startDate, finishDate, customMonth, customWeek } = filters;
+    const { period, startDate, finishDate, customMonth, customWeek } = filtersData;
     const periodFilter = getObjectFromPeriod(period, customWeek, customMonth, startDate, finishDate);
   
     // Reset
@@ -60,7 +61,7 @@ export default Score = () => {
 
   useEffect(() => {
     if (Object.values(conection).length) {
-      checkForConnection(conection, updateDashboard())
+      checkForConnection(conection, updateDataScore(filters))
     }
   }, [ conection ]);
 
@@ -99,7 +100,7 @@ export default Score = () => {
   const updateFilters = (data) => {
     setFilters(data);
     setLoading(true);
-    updateDashboard();
+    updateDataScore(data);
   }
 
   if (loading) {
@@ -131,7 +132,7 @@ export default Score = () => {
                     <Button
                       variant="outline-teal"
                       size="sm"
-                      onClick={() => console.log('CLICK')}
+                      onClick={() => navigate(`/problems/${id}`)}
                     >
                       Ver tablas y gráficas
                     </Button>

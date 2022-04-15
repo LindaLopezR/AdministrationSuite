@@ -33,10 +33,10 @@ export default AuditCompliance = () => {
   const [ tableByUsers, setTableByUsers ] = useState([]);
   const [ tableByAudits, setTableByAudits] = useState([]);
 
-  const updateDashboard = () => {
+  const updateDataAudit = (filtersData) => {
     setLoading(true);
   
-    const { period, startDate, finishDate, customMonth, customWeek } = filters;
+    const { period, startDate, finishDate, customMonth, customWeek } = filtersData;
     const periodFilter = getObjectFromPeriod(period, customWeek, customMonth, startDate, finishDate);
   
     // Reset
@@ -61,7 +61,7 @@ export default AuditCompliance = () => {
 
   useEffect(() => {
     if (Object.values(conection).length) {
-      checkForConnection(conection, updateDashboard())
+      checkForConnection(conection, updateDataAudit(filters))
     }
   }, [ conection ]);
 
@@ -115,7 +115,7 @@ export default AuditCompliance = () => {
   const updateFilters = (data) => {
     setFilters(data);
     setLoading(true);
-    updateDashboard();
+    updateDataAudit(data);
   }
 
   if (loading) {

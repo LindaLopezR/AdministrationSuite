@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 export default TitleSection = props => {
   const { back = false, title, subtitle } = props;
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const colTitle = back ? 9 : 12;
 
@@ -27,7 +27,7 @@ export default TitleSection = props => {
               variant="outline-secondary"
               className="mt-1"
               size="sm"
-              onClick={() => history(-1)}
+              onClick={() => navigate(-1)}
             >
               <FontAwesomeIcon icon={faArrowAltCircleLeft} />{' '}
               Atrás
