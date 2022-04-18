@@ -97,10 +97,10 @@ export default Score = () => {
     setLoading(false);
   };
 
-  const updateFilters = (data) => {
-    setFilters(data);
+  const updateFilters = (dataFilter) => {
+    setFilters(dataFilter);
     setLoading(true);
-    updateDataScore(data);
+    updateDataScore(dataFilter);
   }
 
   if (loading) {

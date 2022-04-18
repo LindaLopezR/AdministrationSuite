@@ -112,10 +112,10 @@ export default OnTime = () => {
     setLoading(false);
   };
 
-  const updateFilters = (data) => {
-    setFilters(data);
+  const updateFilters = (dataFilter) => {
+    setFilters(dataFilter);
     setLoading(true);
-    updateDataOnTime(data);
+    updateDataOnTime(dataFilter);
   }
 
   if (loading) {

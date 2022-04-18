@@ -10,7 +10,7 @@ const clients = Meteor.settings.public.companies || [];
 
 export const Filters = (props) => {
 
-  const { filters, handleFilter = () => {}, levels } = props;
+  const { filters, handleFilter = () => {}, levels, business } = props;
   const [ country, setCountry ] = useState('all');
   const [ company, setCompany ] = useState('all');
   const [ period, setPeriod ] = useState('day');
@@ -18,7 +18,8 @@ export const Filters = (props) => {
   const [ customMonth, setCustomMonth ] = useState('');
   const [ startDate, setStartDate ] = useState(null);
   const [ finishDate, setFinishDate ] = useState(null);
-  const [ levelSelect, setLevelSelect ] = useState('');
+  const [ levelSelect, setLevelSelect ] = useState('all');
+  const [ businessSelect, setBusinessSelect ] = useState('all');
   const [ allCompanies, setAllCompanies ] = useState(clients);
 
   useEffect(() => {
@@ -30,7 +31,8 @@ export const Filters = (props) => {
       setCustomMonth(filters.customMonth);
       setStartDate(filters.startDate);
       setFinishDate(filters.finishDate);
-      setLevelSelect(filters.level)
+      setLevelSelect(filters.level);
+      setBusinessSelect(filters.business);
     }
   }, []);
 
@@ -52,6 +54,8 @@ export const Filters = (props) => {
       customMonth,
       startDate,
       finishDate,
+      level: levelSelect,
+      business: businessSelect
     };
 
     return handleFilter(filtersSubmit);
@@ -160,7 +164,7 @@ export const Filters = (props) => {
                 </>
               )}
               {filters.level && (
-                <Form.Group as={Col} controlId="customMonth">
+                <Form.Group as={Col} controlId="level">
                   <Form.Label>Nivel</Form.Label>
                   <Form.Select
                     size="sm"
@@ -172,6 +176,20 @@ export const Filters = (props) => {
                     {renderOptions(levels)}
                   </Form.Select>
                 </Form.Group>
+              )}
+              {filters.business && (
+                <Form.Group as={Col} controlId="business">
+                <Form.Label>Unidad de negocio</Form.Label>
+                <Form.Select
+                  size="sm"
+                  aria-label="Business"
+                  value={businessSelect}
+                  onChange={e => setBusinessSelect(e.target.value)}
+                >
+                  <option value="all">Todos</option>
+                  {renderOptions(business)}
+                </Form.Select>
+              </Form.Group>
               )}
               <Col md={2}>
                 <Button

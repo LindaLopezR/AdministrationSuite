@@ -71,7 +71,7 @@ export default AuditCompliance = () => {
     }
   }, [ data ]);
 
-  const getDataFromResult = function(template) {
+  const getDataFromResult = function() {
     const { sortedByAudit, sortedByUser } = data;
   
     let dataUsersFiltered = sortedByUser;
@@ -112,10 +112,10 @@ export default AuditCompliance = () => {
     setLoading(false);
   };
 
-  const updateFilters = (data) => {
-    setFilters(data);
+  const updateFilters = (dataFilter) => {
+    setFilters(dataFilter);
     setLoading(true);
-    updateDataAudit(data);
+    updateDataAudit(dataFilter);
   }
 
   if (loading) {

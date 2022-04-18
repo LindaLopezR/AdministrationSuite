@@ -39,7 +39,7 @@ export default Participation = () => {
   
     const { period, startDate, finishDate, customMonth, customWeek } = filtersData;
     const periodFilter = getObjectFromPeriod(period, customWeek, customMonth, startDate, finishDate);
-    const levelFilter = getPositionsByLevel(filters.level);
+    const levelFilter = getPositionsByLevel(filtersData.level);
 
     const areasByBU = allBusiness.map(businessUnit => {
       return {
@@ -82,10 +82,10 @@ export default Participation = () => {
     }
   }, [ data ]);
 
-  const updateFilters = (data) => {
-    setFilters(data);
+  const updateFilters = (dataFilter) => {
+    setFilters(dataFilter);
     setLoading(true);
-    updateParticipations(data);
+    updateParticipations(dataFilter);
   }
 
   if (loading || loading1 || loading2) {
