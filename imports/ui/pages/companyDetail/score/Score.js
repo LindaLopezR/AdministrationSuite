@@ -3,12 +3,14 @@ import { Button, Card, Col, Row } from 'react-bootstrap';
 import { Filters } from '/imports/ui/components/form/Filters';
 import { useNavigate, useParams } from 'react-router-dom';
 
+import { businessUnitsByCompany } from '/imports/startup/hooks';
 import { callbackError, getObjectFromPeriod } from '/imports/ui/pages/utilities/utilities';
 import { checkForConnection, generateConnection } from '/imports/ui/pages/utilities/ddp';
 import { indicatorsScore } from '/imports/ui/components/form/Indicators';
 
 import TitleSection from '/imports/ui/components/pages/TitleSection';
 import LoadingView from '/imports/ui/components/loading/LoadingView';
+import CardBusiness from '/imports/ui/components/charts/CardBusiness';
 import ContentTable from '/imports/ui/components/tables/ContentTable';
 
 const DEFAULT_FILTERS = {
@@ -32,6 +34,10 @@ export default Score = () => {
   const [ loading, setLoading ] = useState(false);
   const [ selectedAreas, setSelectedAreas ] = useState([]);
   const [ tableByAudits, setTableByAudits] = useState([]);
+  const [ business, setBusiness ] = useState([{ name: 'General' }]);
+  const [ itemSelect, setItemSelect ] = useState('General');
+
+  const { loading: loading2, allBusiness } = businessUnitsByCompany(id);
 
   const updateDataScore = (filtersData) => {
     setLoading(true);
@@ -57,6 +63,11 @@ export default Score = () => {
   useEffect(() => {
     const connection = generateConnection(id);
     setConection(connection);
+
+    if (allBusiness && allBusiness.length) {
+      const newData = [...business, allBusiness];
+      setBusiness(newData);
+    }
   }, []);
 
   useEffect(() => {
@@ -74,15 +85,15 @@ export default Score = () => {
   const getDataFromResult = function(template) {
     const { sortedByAudit } = data;
   
-    let dataAuditsFilterd = sortedByAudit;
+    let dataAuditsFilter = sortedByAudit;
   
     if (selectedAreas && selectedAreas.length > 0) {
-      dataAuditsFilterd = dataAuditsFilterd.filter(row => {
+      dataAuditsFilter = dataAuditsFilter.filter(row => {
         return selectedAreas.includes(row._areaId);
       });
     }
   
-    const toTableAudits = dataAuditsFilterd.map(row => {
+    const toTableAudits = dataAuditsFilter.map(row => {
       return {
         _id: row.auditId,
         name: row._audit,
@@ -101,9 +112,59 @@ export default Score = () => {
     setFilters(dataFilter);
     setLoading(true);
     updateDataScore(dataFilter);
+  };
+
+  const getAreaAverage = (item) => {
+    const result = data;
+
+    if (!result) {
+      return '--';
+    }
+
+    const { average, sortedByAudit, sortedByUser } = result;
+
+    if (item.name == 'General') {
+      return average;
+    }
+
+    const selectedAreas = item.areas;
+    let dataAuditsFilter = sortedByAudit;
+    if (selectedAreas && selectedAreas.length > 0) {
+      dataAuditsFilter = dataAuditsFilter.filter(row => {
+        return selectedAreas.includes(row._areaId);
+      });
+    }
+
+    if (dataAuditsFilter.length == 0) {
+      return '--';
+    }
+
+    const totalAverage = dataAuditsFilter.reduce((prev, current) => {
+      return prev + current.average;
+    }, 0);
+
+    return Math.round( totalAverage / dataAuditsFilter.length);
   }
 
-  if (loading) {
+  const selectedBusiness = (item) => {
+    setItemSelect(item.name);
+    setSelectedAreas(item.areas);
+    getDataFromResult();
+  }
+
+  const renderBusiness = () => {
+    return business && business.length &&
+      business.map((item, index) => <CardBusiness 
+        business={item}
+        key={`business-${index}`}
+        averageAction={getAreaAverage(item)}
+        handleAction={() => selectedBusiness(item)}
+        itemSelect={itemSelect}
+      />
+    )
+  };
+
+  if (loading || loading2) {
     return <LoadingView />;
   }
 
@@ -120,6 +181,12 @@ export default Score = () => {
             filters={filters}
             handleFilter={(filters) => updateFilters(filters)}
           />
+
+          <Col md={12}>
+            <Row>
+              {renderBusiness()}
+            </Row>
+          </Col>
 
           <Col md={12}>
             <Card>

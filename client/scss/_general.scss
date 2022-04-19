@@ -95,6 +95,9 @@ input, select {
 .bkg-success {
   background-color: $success-color!important;
 }
+.bkg-teal {
+  background-color: $teal-color!important;
+}
 
 // BADGE
 .badge-label {
@@ -122,6 +125,15 @@ input, select {
 // CARDS
 .card-body {
   padding: 0.5rem 1rem;
+}
+.card-business {
+  padding: 0;
+  .card-body {
+    padding: .5rem;
+  }
+}
+.card-business.bkg-teal {
+  border: 0;
 }
 
 // BUTTONS

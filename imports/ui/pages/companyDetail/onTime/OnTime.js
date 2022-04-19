@@ -3,11 +3,13 @@ import { Card, Col, Row } from 'react-bootstrap';
 import { Filters } from '/imports/ui/components/form/Filters';
 import { useParams } from 'react-router-dom';
 
+import { businessUnitsByCompany } from '/imports/startup/hooks';
 import { callbackError, getObjectFromPeriod } from '/imports/ui/pages/utilities/utilities';
 import { checkForConnection, generateConnection } from '/imports/ui/pages/utilities/ddp';
 
 import TitleSection from '/imports/ui/components/pages/TitleSection';
 import LoadingView from '/imports/ui/components/loading/LoadingView';
+import CardBusiness from '/imports/ui/components/charts/CardBusiness';
 import ContentTable from '/imports/ui/components/tables/ContentTable';
 
 const DEFAULT_FILTERS = {
@@ -32,6 +34,10 @@ export default OnTime = () => {
   const [ selectedAreas, setSelectedAreas ] = useState([]);
   const [ tableByUsers, setTableByUsers ] = useState([]);
   const [ tableByAudits, setTableByAudits] = useState([]);
+  const [ business, setBusiness ] = useState([{ name: 'General' }]);
+  const [ itemSelect, setItemSelect ] = useState('General');
+
+  const { loading: loading2, allBusiness } = businessUnitsByCompany(id);
 
   const updateDataOnTime = (filtersData) => {
     setLoading(true);
@@ -57,6 +63,11 @@ export default OnTime = () => {
   useEffect(() => {
     const connection = generateConnection(id);
     setConection(connection);
+
+    if (allBusiness && allBusiness.length) {
+      const newData = [...business, allBusiness];
+      setBusiness(newData);
+    }
   }, []);
 
   useEffect(() => {
@@ -75,14 +86,14 @@ export default OnTime = () => {
     const { sortedByAudit, sortedByUser } = data;
   
     let dataUsersFiltered = sortedByUser;
-    let dataAuditsFilterd = sortedByAudit;
+    let dataAuditsFilter = sortedByAudit;
   
     if (selectedAreas.length > 0) {
       dataUsersFiltered = dataUsersFiltered.filter(row => {
         return selectedAreas.includes(row._areaId);
       });
   
-      dataAuditsFilterd = dataAuditsFilterd.filter(row => {
+      dataAuditsFilter = dataAuditsFilter.filter(row => {
         return selectedAreas.includes(row._areaId);
       });
     }
@@ -97,7 +108,7 @@ export default OnTime = () => {
       }
     });
   
-    const toTableAudits = dataAuditsFilterd.map(row => {
+    const toTableAudits = dataAuditsFilter.map(row => {
       return {
         name: row._audit,
         average: row.average,
@@ -118,7 +129,57 @@ export default OnTime = () => {
     updateDataOnTime(dataFilter);
   }
 
-  if (loading) {
+  const getAreaAverage = (item) => {
+    const result = data;
+
+    if (!result) {
+      return '--';
+    }
+
+    const { average, sortedByAudit, sortedByUser } = result;
+
+    if (item.name == 'General') {
+      return average;
+    }
+
+    const selectedAreas = item.areas;
+    let dataAuditsFilter = sortedByAudit;
+    if (selectedAreas && selectedAreas.length > 0) {
+      dataAuditsFilter = dataAuditsFilter.filter(row => {
+        return selectedAreas.includes(row._areaId);
+      });
+    }
+
+    if (dataAuditsFilter.length == 0) {
+      return '--';
+    }
+
+    const totalAverage = dataAuditsFilter.reduce((prev, current) => {
+      return prev + current.average;
+    }, 0);
+
+    return Math.round( totalAverage / dataAuditsFilter.length);
+  }
+
+  const selectedBusiness = (item) => {
+    setItemSelect(item.name);
+    setSelectedAreas(item.areas);
+    getDataFromResult();
+  }
+
+  const renderBusiness = () => {
+    return business && business.length &&
+      business.map((item, index) => <CardBusiness 
+        business={item}
+        key={`business-${index}`}
+        averageAction={getAreaAverage(item)}
+        handleAction={() => selectedBusiness(item)}
+        itemSelect={itemSelect}
+      />
+    )
+  }
+
+  if (loading || loading2) {
     return <LoadingView />;
   }
 
@@ -135,6 +196,12 @@ export default OnTime = () => {
             filters={filters}
             handleFilter={(filters) => updateFilters(filters)}
           />
+
+          <Col md={12}>
+            <Row>
+              {renderBusiness()}
+            </Row>
+          </Col>
 
           <Col md={6}>
             <Card>
