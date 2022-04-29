@@ -1,3 +1,4 @@
+import React from 'react';
 import { faClock, faFile, faImage, faMapPin, faNoteSticky, faVideo, faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 
@@ -130,6 +131,34 @@ export const getDataDoc = (data) => {
       return 'N/A';
   }
 };
+
+export const getStatus = (data) => {
+  let style = '';
+  let title = '';
+
+  switch(data){
+    case 1 :
+      style = 'active';
+      title = 'Activo';
+      break;
+    case 2 :
+      style = 'suspended';
+      title = 'Suspendido';
+      break;
+    case 3 :
+      style = 'test';
+      title = 'Test';
+      break;
+    default :
+      style = '';
+      title = 'N/A';
+      break;
+  }
+  return <p className="status-item">
+    <i className={style} />
+    {title}
+  </p>
+}
 
 function getTypeFromUrl(data) {
 	if (data.startsWith('{') && data.endsWith('}')) {

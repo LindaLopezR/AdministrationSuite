@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Dropdown, Nav, Navbar, Row } from 'react-bootstrap';
 import SideNav, { NavItem, NavIcon, NavText } from '@trendmicro/react-sidenav';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDashboard, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faDashboard, faGears, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { faUser } from '@fortawesome/free-regular-svg-icons';
 import { useNavigate } from 'react-router-dom';
 import { Outlet } from 'react-router-dom';
@@ -27,6 +27,10 @@ export default MainLayout = props => {
               <Nav.Link href="/" className="d-block d-md-none">
                 <FontAwesomeIcon icon={faDashboard} />{' '}
                 Dashboard
+              </Nav.Link>
+              <Nav.Link href="/settings" className="d-block d-md-none">
+                <FontAwesomeIcon icon={faGears} />{' '}
+                Configuración
               </Nav.Link>
               <Dropdown>
                 <Dropdown.Toggle
@@ -67,6 +71,16 @@ export default MainLayout = props => {
             </NavIcon>
             <NavText>
               Dashboard
+            </NavText>
+          </NavItem>
+        </SideNav.Nav>
+        <SideNav.Nav defaultSelected="">
+          <NavItem eventKey="settings">
+            <NavIcon>
+              <FontAwesomeIcon icon={faGears} />
+            </NavIcon>
+            <NavText>
+              Configuración
             </NavText>
           </NavItem>
         </SideNav.Nav>

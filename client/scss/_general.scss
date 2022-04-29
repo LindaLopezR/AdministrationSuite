@@ -19,7 +19,7 @@ h6 {
 }
 
 p, label,
-input, select {
+input, select, button {
   font-size: 0.8rem!important;
 }
 
@@ -83,8 +83,13 @@ input, select {
   color: $light-color;
 }
 
+.title-card {
+  font-weight: bold;
+  color: $gray-color;
+}
+
 .bkg-no-data {
-  background-color: #c9c9c9!important;
+  background-color: $gray-color!important;
 }
 .bkg-danger {
   background-color: $danger-color!important;
@@ -115,7 +120,7 @@ input, select {
   background-color: $danger-color;
 }
 .badge-label-none {
-  background-color: #c9c9c9;
+  background-color: $gray-color;
 }
 
 .line-header {

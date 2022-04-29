@@ -123,8 +123,6 @@ export default AuditDetail = props => {
     return <LoadingView />;
   }
 
-  console.log('sdgs', tableData)
-
   return (
     <>
       <TitleSection

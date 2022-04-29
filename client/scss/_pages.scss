@@ -1,0 +1,23 @@
+@import './variables';
+
+// SETTINGS
+.status-item {
+  font-size: 0.9rem!important;
+  display: flex;
+  align-items: center;
+  i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50px;
+    margin-right: 0.5rem;
+  }
+  .active {
+    background-color: $success-color;
+  }
+  .suspended {
+    background-color: $gray-color;
+  }
+  .test {
+    background-color: $teal-color;
+  }
+}

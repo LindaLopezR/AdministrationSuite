@@ -64,13 +64,13 @@
 .card-char-dashboard {
   text-decoration: none;
   color: black;
- .card {
-  margin-bottom: 0.5rem;
-  .card-body {
-    padding: 3px;
-    text-align: center;
+  .card {
+    margin-bottom: 0.5rem;
+    .card-body {
+      padding: 3px;
+      text-align: center;
+    }
   }
- }
   &:hover {
     .card.bkg-danger {
       background-color: #ad1f25!important;
@@ -85,6 +85,10 @@
     .card.bkg-warning {
       background-color: #D9D793!important;
       color: black;
+    }
+    .card-general {
+      background-color: $teal-color;
+      color: white;
     }
   }
 }

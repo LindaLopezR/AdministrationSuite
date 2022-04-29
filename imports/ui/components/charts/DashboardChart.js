@@ -84,7 +84,7 @@ export default DashboardChart = (props) => {
             <Row className="mt-3">
               {companyData.map((item, index) => (
                 <Col xs={3} key={`card-${index}`}>
-                  <a href={item.link} className='card-char-dashboard'>
+                  <a href={item.link} className="card-char-dashboard">
                     <Card className={`${getColor(item)}`}>
                       <Card.Body>
                         <h6>{item.name}</h6>

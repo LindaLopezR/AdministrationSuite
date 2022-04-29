@@ -15,6 +15,8 @@ import OnTime from './pages/companyDetail/onTime/OnTime';
 import Participation from './pages/companyDetail/participation/Participation';
 import Problems from './pages/problems/Problems';
 import Score from './pages/companyDetail/score/Score';
+import Settings from './pages/settings/Settings';
+import CompanySettings from './pages/settings/company/CompanySettings';
 
 const PrivateRoute = ({ component: Component }) => {
 
@@ -50,6 +52,8 @@ export const App = () => (
           <Route path="/tableDetail/:id" element={<PrivateRoute component={GenericTableDetail} />} />
           <Route path="/auditReport/:company/:auditId" element={<PrivateRoute component={AuditDetail} />} />
           <Route path="/problems/:id" element={<PrivateRoute component={Problems} />} />
+          <Route path="/settings" element={<PrivateRoute component={Settings} />} />
+          <Route path="/settingsCompany/:id" element={<PrivateRoute component={CompanySettings} />} />
         </Route>
         <Route element={<GeneralLayout />}>
           <Route path="/login" element={<ProtectedLogging component={Login} />} />
