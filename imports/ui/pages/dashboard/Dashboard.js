@@ -136,7 +136,7 @@ export default Dashboard = () => {
       const totalPArticipationByCompany = getDataToParticipation(participationObject);
 
       // Participation
-      ddpConnection.connection.call('participationAverage', filter, totalPArticipationByCompany, function(error, result) {
+      ddpConnection.connection.call('participationAverage', filter, totalPArticipationByCompany, false, function(error, result) {
         if (error) {
           return console.log('Error ', error, ddpConnection.company);
         } else  {
